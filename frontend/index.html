@@ -1,138 +1,230 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Agendamento de Visitas — Museu</title>
     <style>
-      :root { color-scheme: light; }
-      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.35; }
-      header, main { max-width: 960px; margin: 0 auto; padding: 16px; }
-      header { border-bottom: 1px solid #ddd; }
-      h1 { margin: 0 0 4px; font-size: 22px; }
-      .muted { color: #555; font-size: 14px; }
-      .grid { display: grid; gap: 16px; }
-      @media (min-width: 880px) { .grid { grid-template-columns: 1fr 1fr; } }
-      section { border: 1px solid #ddd; border-radius: 8px; padding: 12px; }
-      section h2 { margin: 0 0 10px; font-size: 18px; }
-      label { display: block; font-size: 14px; margin-top: 10px; }
-      input, select, textarea, button { width: 100%; padding: 10px; font-size: 14px; box-sizing: border-box; }
-      textarea { min-height: 90px; resize: vertical; }
-      button { cursor: pointer; }
-      .row { display: grid; gap: 12px; }
-      @media (min-width: 560px) { .row.two { grid-template-columns: 1fr 1fr; } }
-      .status { margin-top: 10px; font-size: 14px; }
-      .status.ok { color: #0a5; }
-      .status.err { color: #b00; }
-      pre { white-space: pre-wrap; word-break: break-word; background: #f6f6f6; padding: 10px; border-radius: 6px; }
+        :root {
+            color-scheme: light;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            line-height: 1.35;
+        }
+
+        header,
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        header {
+            border-bottom: 1px solid #ddd;
+        }
+
+        h1 {
+            margin: 0 0 4px;
+            font-size: 22px;
+        }
+
+        .muted {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        @media (min-width: 880px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        section h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .row {
+            display: grid;
+            gap: 12px;
+        }
+
+        @media (min-width: 560px) {
+            .row.two {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .status.ok {
+            color: #0a5;
+        }
+
+        .status.err {
+            color: #b00;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: #f6f6f6;
+            padding: 10px;
+            border-radius: 6px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <header>
-      <h1>Agendamento de Visitas — Museu</h1>
-      <div class="muted">Agende sua visita online. Confirmação pode depender da validação do setor responsável.</div>
-      <div id="health" class="muted" style="margin-top:6px"></div>
+        <h1>Agendamento de Visitas — Museu</h1>
+        <div class="muted">Agende sua visita online. Confirmação pode depender da validação do setor responsável.</div>
+        <div id="health" class="muted" style="margin-top:6px"></div>
     </header>
 
     <main class="grid">
-      <section>
-        <h2>Informações</h2>
-        <div id="institutional" class="muted">Carregando…</div>
-        <h2 style="margin-top:14px">Regras de uso do espaço</h2>
-        <div id="rules" class="muted">Carregando…</div>
-      </section>
+        <section>
+            <h2>Informações</h2>
+            <div id="institutional" class="muted">Carregando…</div>
+            <h2 style="margin-top:14px">Regras de uso do espaço</h2>
+            <div id="rules" class="muted">Carregando…</div>
+        </section>
 
-      <section>
-        <h2>Agendar visita</h2>
+        <section>
+            <h2>Agendar visita</h2>
 
-        <div class="row two">
-          <div>
-            <label for="day">Data</label>
-            <input id="day" type="date" />
-          </div>
-          <div>
-            <label for="time">Horário</label>
-            <select id="time"></select>
-          </div>
-        </div>
+            <div class="row two">
+                <div>
+                    <label for="day">Data</label>
+                    <input id="day" type="date" />
+                </div>
+                <div>
+                    <label for="time">Horário</label>
+                    <select id="time"></select>
+                </div>
+            </div>
 
-        <div class="row two">
-          <div>
-            <label for="groupSize">Tamanho do grupo</label>
-            <input id="groupSize" type="number" min="1" value="1" />
-          </div>
-          <div>
-            <label for="institution">Instituição (opcional)</label>
-            <input id="institution" type="text" placeholder="Escola, setor, projeto…" />
-          </div>
-        </div>
+            <div class="row two">
+                <div>
+                    <label for="groupSize">Tamanho do grupo</label>
+                    <input id="groupSize" type="number" min="1" value="1" />
+                </div>
+                <div>
+                    <label for="institution">Instituição (opcional)</label>
+                    <input id="institution" type="text" placeholder="Escola, setor, projeto…" />
+                </div>
+            </div>
 
-        <label for="purpose">Finalidade</label>
-        <input id="purpose" type="text" placeholder="Ex.: visita guiada, atividade educativa…" />
+            <label for="purpose">Finalidade</label>
+            <input id="purpose" type="text" placeholder="Ex.: visita guiada, atividade educativa…" />
 
-        <h2 style="margin-top:14px">Responsável</h2>
-        <div class="row two">
-          <div>
-            <label for="name">Nome</label>
-            <input id="name" type="text" />
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input id="email" type="email" />
-          </div>
-        </div>
+            <h2 style="margin-top:14px">Responsável</h2>
+            <div class="row two">
+                <div>
+                    <label for="name">Nome</label>
+                    <input id="name" type="text" />
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input id="email" type="email" />
+                </div>
+            </div>
 
-        <div class="row two">
-          <div>
-            <label for="phone">Telefone</label>
-            <input id="phone" type="tel" placeholder="(xx) xxxxx-xxxx" />
-          </div>
-          <div>
-            <label for="city">Cidade (opcional)</label>
-            <input id="city" type="text" />
-          </div>
-        </div>
+            <div class="row two">
+                <div>
+                    <label for="phone">Telefone</label>
+                    <input id="phone" type="tel" placeholder="(xx) xxxxx-xxxx" />
+                </div>
+                <div>
+                    <label for="city">Cidade (opcional)</label>
+                    <input id="city" type="text" />
+                </div>
+            </div>
 
-        <div class="row two">
-          <div>
-            <label for="state">UF (opcional)</label>
-            <input id="state" type="text" maxlength="2" placeholder="BA" />
-          </div>
-          <div>
-            <label for="accessibility">Necessidades de acessibilidade (opcional)</label>
-            <input id="accessibility" type="text" />
-          </div>
-        </div>
+            <div class="row two">
+                <div>
+                    <label for="state">UF (opcional)</label>
+                    <input id="state" type="text" maxlength="2" placeholder="BA" />
+                </div>
+                <div>
+                    <label for="accessibility">Necessidades de acessibilidade (opcional)</label>
+                    <input id="accessibility" type="text" />
+                </div>
+            </div>
 
-        <label for="notes">Observações (opcional)</label>
-        <textarea id="notes" placeholder="Algo que o museu deva saber…"></textarea>
+            <label for="notes">Observações (opcional)</label>
+            <textarea id="notes" placeholder="Algo que o museu deva saber…"></textarea>
 
-        <button id="btnCreate">Solicitar agendamento</button>
-        <div id="createStatus" class="status"></div>
-        <pre id="createResult" style="display:none"></pre>
-      </section>
+            <button id="btnCreate">Solicitar agendamento</button>
+            <div id="createStatus" class="status"></div>
+            <pre id="createResult" style="display:none"></pre>
+        </section>
 
-      <section>
-        <h2>Avaliação / Sugestões</h2>
-        <div class="muted">Após a visita, envie sua avaliação/sugestões.</div>
+        <section>
+            <h2>Avaliação / Sugestões</h2>
+            <div class="muted">Após a visita, envie sua avaliação/sugestões.</div>
 
-        <label for="fbAppointmentId">ID do agendamento</label>
-        <input id="fbAppointmentId" type="text" placeholder="Cole aqui o ID recebido no agendamento" />
+            <label for="fbAppointmentId">ID do agendamento</label>
+            <input id="fbAppointmentId" type="text" placeholder="Cole aqui o ID recebido no agendamento" />
 
-        <label for="fbRating">Nota (1 a 5)</label>
-        <input id="fbRating" type="number" min="1" max="5" value="5" />
+            <label for="fbRating">Nota (1 a 5)</label>
+            <input id="fbRating" type="number" min="1" max="5" value="5" />
 
-        <label for="fbComment">Comentário (opcional)</label>
-        <textarea id="fbComment"></textarea>
+            <label for="fbComment">Comentário (opcional)</label>
+            <textarea id="fbComment"></textarea>
 
-        <label for="fbSuggestions">Sugestões (opcional)</label>
-        <textarea id="fbSuggestions"></textarea>
+            <label for="fbSuggestions">Sugestões (opcional)</label>
+            <textarea id="fbSuggestions"></textarea>
 
-        <button id="btnFeedback">Enviar avaliação</button>
-        <div id="fbStatus" class="status"></div>
-      </section>
+            <button id="btnFeedback">Enviar avaliação</button>
+            <div id="fbStatus" class="status"></div>
+        </section>
     </main>
 
     <script src="/static/app.js"></script>
-  </body>
+</body>
+
 </html>
