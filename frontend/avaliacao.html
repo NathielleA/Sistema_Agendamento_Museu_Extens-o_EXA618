@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Avaliação de Visita — Museu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --verde:   #1e3d2f;
+      --verde-m: #2d5a42;
+      --verde-l: #e8f0eb;
+      --laranja: #8b3a0f;
+      --laranja-l: #f5ece6;
+      --creme:   #faf8f4;
+      --texto:   #1a1a18;
+      --muted:   #5c5c58;
+      --borda:   #ddd8cf;
+      --erro:    #b00020;
+      --ok:      #0a6640;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--verde);
+      color: #fff;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav a {
+      color: rgba(255,255,255,.72);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 28px;
+      transition: color .2s;
+    }
+
+    nav a:hover, nav a.active { color: #fff; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: var(--laranja);
+      padding: 40px 32px 36px;
+      color: #fff;
+    }
+
+    .page-header .breadcrumb {
+      font-size: 13px;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 10px;
+    }
+
+    .page-header .breadcrumb a {
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+    }
+
+    .page-header .breadcrumb a:hover { color: #fff; }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+    }
+
+    .page-header p {
+      color: rgba(255,255,255,.65);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--borda);
+      border-radius: 10px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--verde);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    /* ── RATING STARS ── */
+    .stars-group {
+      margin-bottom: 20px;
+    }
+
+    .stars-label {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .stars {
+      display: flex;
+      gap: 6px;
+    }
+
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 32px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      color: #ddd;
+      transition: color .15s, transform .1s;
+    }
+
+    .star-btn:hover, .star-btn.active { color: var(--laranja); }
+    .star-btn:hover { transform: scale(1.1); }
+
+    .rating-text {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── FORM ── */
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    label .opt {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    input, textarea {
+      padding: 10px 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--borda);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--texto);
+      transition: border-color .18s, box-shadow .18s;
+      width: 100%;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--laranja);
+      box-shadow: 0 0 0 3px rgba(139,58,15,.1);
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    /* ── SUBMIT ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+
+    .btn-accent {
+      background: var(--laranja);
+      color: #fff;
+    }
+
+    .btn-accent:hover { background: #a34512; transform: translateY(-1px); }
+
+    /* ── STATUS ── */
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .status.ok { display: block; background: #e8f4ec; color: var(--ok); border: 1px solid #b6dac3; }
+    .status.err { display: block; background: #fde8e8; color: var(--erro); border: 1px solid #f5b8b8; }
+
+    /* ── THANKS STATE ── */
+    .thanks {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .thanks .emoji { font-size: 52px; margin-bottom: 16px; }
+
+    .thanks h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--verde);
+      margin-bottom: 10px;
+    }
+
+    .thanks p { color: var(--muted); font-size: 15px; }
+
+    .thanks a {
+      display: inline-block;
+      margin-top: 24px;
+      color: var(--verde);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--verde);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--verde);
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      padding: 22px;
+      font-size: 13px;
+    }
+
+    footer a { color: rgba(255,255,255,.75); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="logo" href="index.html">Museu</a>
+    <nav>
+      <a href="agendamento.html">Agendar</a>
+      <a href="avaliacao.html" class="active">Avaliar</a>
+    </nav>
+  </header>
+
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">Início</a> / Avaliação</div>
+    <h1>Avaliação de Visita</h1>
+    <p>Sua opinião é muito importante para melhorarmos continuamente.</p>
+  </div>
+
+  <div class="container">
+
+    <div class="card" id="formCard">
+      <div class="card-title">Enviar avaliação</div>
+
+      <div class="field">
+        <label for="fbAppointmentId">ID do agendamento</label>
+        <input id="fbAppointmentId" type="text" placeholder="Cole aqui o ID recebido no agendamento" />
+      </div>
+
+      <!-- RATING VISUAL -->
+      <div class="stars-group">
+        <span class="stars-label">Sua nota</span>
+        <div class="stars" id="stars">
+          <button class="star-btn" data-v="1" type="button" aria-label="1 estrela">★</button>
+          <button class="star-btn" data-v="2" type="button" aria-label="2 estrelas">★</button>
+          <button class="star-btn" data-v="3" type="button" aria-label="3 estrelas">★</button>
+          <button class="star-btn" data-v="4" type="button" aria-label="4 estrelas">★</button>
+          <button class="star-btn" data-v="5" type="button" aria-label="5 estrelas">★</button>
+        </div>
+        <div class="rating-text" id="ratingText">Selecione uma nota</div>
+        <input type="hidden" id="fbRating" value="" />
+      </div>
+
+      <div class="field">
+        <label for="fbComment">Comentário <span class="opt">(opcional)</span></label>
+        <textarea id="fbComment" placeholder="Como foi sua experiência?"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="fbSuggestions">Sugestões <span class="opt">(opcional)</span></label>
+        <textarea id="fbSuggestions" placeholder="O que poderíamos melhorar?"></textarea>
+      </div>
+
+      <button class="btn btn-accent" id="btnFeedback">
+        <span>Enviar avaliação</span>
+        <span>→</span>
+      </button>
+
+      <div id="fbStatus" class="status"></div>
+    </div>
+
+    <!-- THANKS STATE -->
+    <div class="card thanks" id="thanksCard">
+      <div class="emoji">🎉</div>
+      <h2>Obrigado pelo seu retorno!</h2>
+      <p>Sua avaliação foi enviada com sucesso e nos ajudará a melhorar cada vez mais.</p>
+      <a href="index.html">← Voltar ao início</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Museu &nbsp;|&nbsp; <a href="index.html">Início</a> &nbsp;|&nbsp; <a href="agendamento.html">Agendar visita</a></p>
+  </footer>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function setStatus(el, msg, ok) {
+      el.textContent = msg;
+      el.className = `status ${ok ? 'ok' : 'err'}`;
+    }
+
+    async function api(path, options) {
+      const res = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+      const text = await res.text();
+      let data;
+      try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+      if (!res.ok) {
+        const detail = data?.detail || data?.error || `HTTP ${res.status}`;
+        throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
+      }
+      return data;
+    }
+
+    // ── STAR RATING ──
+    const ratingLabels = ['', 'Ruim', 'Regular', 'Bom', 'Muito bom', 'Excelente'];
+    let selectedRating = 0;
+
+    const starBtns = document.querySelectorAll('.star-btn');
+
+    function paintStars(val) {
+      starBtns.forEach(btn => {
+        btn.classList.toggle('active', Number(btn.dataset.v) <= val);
+      });
+      $('ratingText').textContent = val ? `${val} — ${ratingLabels[val]}` : 'Selecione uma nota';
+    }
+
+    starBtns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => paintStars(Number(btn.dataset.v)));
+      btn.addEventListener('mouseleave', () => paintStars(selectedRating));
+      btn.addEventListener('click', () => {
+        selectedRating = Number(btn.dataset.v);
+        $('fbRating').value = selectedRating;
+        paintStars(selectedRating);
+      });
+    });
+
+    // ── Pre-fill ID from session if available ──
+    const storedId = sessionStorage.getItem('lastAppointmentId');
+    if (storedId) $('fbAppointmentId').value = storedId;
+
+    // ── SEND ──
+    async function sendFeedback() {
+      const statusEl = $('fbStatus');
+      try {
+        setStatus(statusEl, 'Enviando…', true);
+
+        const appointmentId = $('fbAppointmentId').value.trim();
+        const rating = Number($('fbRating').value);
+
+        if (!appointmentId) throw new Error('Informe o ID do agendamento.');
+        if (!rating || rating < 1 || rating > 5) throw new Error('Selecione uma nota de 1 a 5.');
+
+        const payload = {
+          appointment_id: appointmentId,
+          rating,
+          comment: $('fbComment').value.trim() || null,
+          suggestions: $('fbSuggestions').value.trim() || null,
+        };
+
+        await api('/feedback', { method: 'POST', body: JSON.stringify(payload) });
+
+        $('formCard').style.display = 'none';
+        $('thanksCard').style.display = 'block';
+        sessionStorage.removeItem('lastAppointmentId');
+      } catch (e) {
+        setStatus(statusEl, e.message || 'Erro ao enviar avaliação.', false);
+      }
+    }
+
+    $('btnFeedback').addEventListener('click', e => { e.preventDefault(); sendFeedback(); });
+  </script>
+</body>
+</html>

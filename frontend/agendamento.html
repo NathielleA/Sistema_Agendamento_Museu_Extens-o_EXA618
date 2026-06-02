@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agendar Visita — Museu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --verde:   #1e3d2f;
+      --verde-m: #2d5a42;
+      --verde-l: #e8f0eb;
+      --laranja: #8b3a0f;
+      --laranja-l: #f5ece6;
+      --creme:   #faf8f4;
+      --texto:   #1a1a18;
+      --muted:   #5c5c58;
+      --borda:   #ddd8cf;
+      --erro:    #b00020;
+      --ok:      #0a6640;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--verde);
+      color: #fff;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav a {
+      color: rgba(255,255,255,.72);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 28px;
+      transition: color .2s;
+    }
+
+    nav a:hover, nav a.active { color: #fff; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: var(--verde);
+      padding: 40px 32px 36px;
+      color: #fff;
+    }
+
+    .page-header .breadcrumb {
+      font-size: 13px;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 10px;
+    }
+
+    .page-header .breadcrumb a {
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+    }
+
+    .page-header .breadcrumb a:hover { color: #fff; }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .page-header p {
+      color: rgba(255,255,255,.65);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--borda);
+      border-radius: 10px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--verde);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    /* ── FORM ── */
+    .row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 560px) {
+      .row.two { grid-template-columns: 1fr 1fr; }
+      .row.three { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--texto);
+    }
+
+    label .opt {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    input, select, textarea {
+      padding: 10px 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid var(--borda);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--texto);
+      transition: border-color .18s, box-shadow .18s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--verde-m);
+      box-shadow: 0 0 0 3px rgba(45,90,66,.1);
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c5c58' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
+
+    select:disabled { background-color: #f5f4f0; color: var(--muted); }
+
+    /* ── SUBMIT ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+
+    .btn-primary {
+      background: var(--verde);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--verde-m); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── STATUS ── */
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .status.ok { display: block; background: #e8f4ec; color: var(--ok); border: 1px solid #b6dac3; }
+    .status.err { display: block; background: #fde8e8; color: var(--erro); border: 1px solid #f5b8b8; }
+
+    pre {
+      margin-top: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f6f6f2;
+      border: 1px solid var(--borda);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: none;
+    }
+
+    /* ── AVISO ── */
+    .notice {
+      background: var(--laranja-l);
+      border: 1px solid #e0c4b3;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--laranja);
+      margin-bottom: 24px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--verde);
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      padding: 22px;
+      font-size: 13px;
+    }
+
+    footer a { color: rgba(255,255,255,.75); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="logo" href="index.html">Museu</a>
+    <nav>
+      <a href="agendamento.html" class="active">Agendar</a>
+      <a href="avaliacao.html">Avaliar</a>
+    </nav>
+  </header>
+
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">Início</a> / Agendamento</div>
+    <h1>Agendar Visita</h1>
+    <p>Preencha os dados abaixo para solicitar seu agendamento.</p>
+  </div>
+
+  <div class="container">
+
+    <div class="notice">
+      ℹ️ A confirmação do agendamento pode depender da validação do setor responsável. Você receberá um retorno pelo e-mail informado.
+    </div>
+
+    <!-- DATA E HORÁRIO -->
+    <div class="card">
+      <div class="card-title">Data e Horário</div>
+      <div class="row two">
+        <div class="field">
+          <label for="day">Data</label>
+          <input id="day" type="date" />
+        </div>
+        <div class="field">
+          <label for="time">Horário</label>
+          <select id="time"><option value="">Selecione uma data primeiro</option></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISITA -->
+    <div class="card">
+      <div class="card-title">Informações da Visita</div>
+      <div class="row two">
+        <div class="field">
+          <label for="groupSize">Tamanho do grupo</label>
+          <input id="groupSize" type="number" min="1" value="1" />
+        </div>
+        <div class="field">
+          <label for="institution">Instituição <span class="opt">(opcional)</span></label>
+          <input id="institution" type="text" placeholder="Escola, setor, projeto…" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="purpose">Finalidade</label>
+          <input id="purpose" type="text" placeholder="Ex.: visita guiada, atividade educativa…" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="notes">Observações <span class="opt">(opcional)</span></label>
+          <textarea id="notes" placeholder="Algo que o museu deva saber…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESPONSÁVEL -->
+    <div class="card">
+      <div class="card-title">Dados do Responsável</div>
+      <div class="row two">
+        <div class="field">
+          <label for="name">Nome completo</label>
+          <input id="name" type="text" />
+        </div>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" />
+        </div>
+      </div>
+      <div class="row two">
+        <div class="field">
+          <label for="phone">Telefone</label>
+          <input id="phone" type="tel" placeholder="(xx) xxxxx-xxxx" />
+        </div>
+        <div class="field">
+          <label for="accessibility">Acessibilidade <span class="opt">(opcional)</span></label>
+          <input id="accessibility" type="text" placeholder="Descreva se necessário" />
+        </div>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label for="city">Cidade <span class="opt">(opcional)</span></label>
+          <input id="city" type="text" />
+        </div>
+        <div class="field">
+          <label for="state">UF <span class="opt">(opcional)</span></label>
+          <input id="state" type="text" maxlength="2" placeholder="BA" />
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btnCreate">
+      <span>Solicitar agendamento</span>
+      <span>→</span>
+    </button>
+
+    <div id="createStatus" class="status"></div>
+    <pre id="createResult"></pre>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Museu &nbsp;|&nbsp; <a href="index.html">Início</a> &nbsp;|&nbsp; <a href="avaliacao.html">Avaliar visita</a></p>
+  </footer>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function setStatus(el, msg, ok) {
+      el.textContent = msg;
+      el.className = `status ${ok ? 'ok' : 'err'}`;
+    }
+
+    async function api(path, options) {
+      const res = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+      const text = await res.text();
+      let data;
+      try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+      if (!res.ok) {
+        const detail = data?.detail || data?.error || `HTTP ${res.status}`;
+        throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
+      }
+      return data;
+    }
+
+    function toIsoWithOffset(dayStr, timeStr) {
+      const [y, m, d] = dayStr.split('-').map(Number);
+      const [hh, mm] = timeStr.split(':').map(Number);
+      const dt = new Date(y, m - 1, d, hh, mm, 0);
+      const pad = n => String(n).padStart(2, '0');
+      const tzMin = dt.getTimezoneOffset();
+      const sign = tzMin > 0 ? '-' : '+';
+      const abs = Math.abs(tzMin);
+      const offH = pad(Math.floor(abs / 60));
+      const offM = pad(abs % 60);
+      return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}:00${sign}${offH}:${offM}`;
+    }
+
+    async function loadAvailabilityForDay(dayStr) {
+      const timeSelect = $('time');
+      timeSelect.innerHTML = '';
+      if (!dayStr) return;
+
+      const av = await api(`/availability?day=${encodeURIComponent(dayStr)}`);
+      const slots = av.slots || [];
+
+      if (!av.open) {
+        timeSelect.innerHTML = '<option value="">Museu fechado neste dia</option>';
+        timeSelect.disabled = true;
+        return;
+      }
+
+      const available = slots.filter(s => (s.remaining || 0) > 0);
+      if (available.length === 0) {
+        timeSelect.innerHTML = '<option value="">Sem horários disponíveis</option>';
+        timeSelect.disabled = true;
+        return;
+      }
+
+      for (const s of available) {
+        const start = new Date(s.start);
+        const hh = String(start.getHours()).padStart(2, '0');
+        const mm = String(start.getMinutes()).padStart(2, '0');
+        const opt = document.createElement('option');
+        opt.value = `${hh}:${mm}`;
+        opt.textContent = `${hh}:${mm} — vagas: ${s.remaining}`;
+        timeSelect.appendChild(opt);
+      }
+      timeSelect.disabled = false;
+    }
+
+    async function createAppointment() {
+      const statusEl = $('createStatus');
+      const outEl = $('createResult');
+      outEl.style.display = 'none';
+
+      try {
+        setStatus(statusEl, 'Enviando…', true);
+        const day = $('day').value;
+        const time = $('time').value;
+        if (!day || !time) throw new Error('Selecione data e horário.');
+
+        const payload = {
+          start: toIsoWithOffset(day, time),
+          visitor: {
+            name: $('name').value.trim(),
+            email: $('email').value.trim(),
+            phone: $('phone').value.trim(),
+          },
+          group: {
+            size: Number($('groupSize').value),
+            institution: $('institution').value.trim() || null,
+            city: $('city').value.trim() || null,
+            state: $('state').value.trim().toUpperCase() || null,
+          },
+          purpose: $('purpose').value.trim(),
+          notes: $('notes').value.trim() || null,
+          accessibility_needs: $('accessibility').value.trim() || null,
+        };
+
+        const created = await api('/appointments', { method: 'POST', body: JSON.stringify(payload) });
+        setStatus(statusEl, '✓ Solicitação registrada com sucesso! Verifique seu e-mail.', true);
+        outEl.style.display = 'block';
+        outEl.textContent = JSON.stringify(created, null, 2);
+
+        if (created?.id) {
+          sessionStorage.setItem('lastAppointmentId', created.id);
+        }
+
+        await loadAvailabilityForDay(day);
+      } catch (e) {
+        setStatus(statusEl, e.message || 'Erro ao criar agendamento.', false);
+      }
+    }
+
+    async function init() {
+      const dayEl = $('day');
+      const base = new Date();
+      base.setDate(base.getDate() + 1);
+      const yyyy = base.getFullYear();
+      const mm = String(base.getMonth() + 1).padStart(2, '0');
+      const dd = String(base.getDate()).padStart(2, '0');
+      dayEl.value = `${yyyy}-${mm}-${dd}`;
+
+      dayEl.addEventListener('change', async () => {
+        try {
+          await loadAvailabilityForDay(dayEl.value);
+        } catch (e) {
+          $('time').innerHTML = `<option value="">${e.message || 'Erro ao carregar horários'}</option>`;
+          $('time').disabled = true;
+        }
+      });
+
+      $('btnCreate').addEventListener('click', e => { e.preventDefault(); createAppointment(); });
+
+      try { await loadAvailabilityForDay(dayEl.value); } catch {}
+    }
+
+    init().catch(console.error);
+  </script>
+</body>
+</html>
